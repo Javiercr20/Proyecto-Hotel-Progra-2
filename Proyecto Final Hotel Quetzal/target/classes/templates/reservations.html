@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Reservas')"></head>
+<body>
+<nav class="navbar">
+  <a href="/" class="brand">Hotel Quetzal (Guatemala)</a>
+  <a href="/rooms">Habitaciones</a>
+  <a href="/reservations" class="active">Reservas</a>
+  <a href="/guests">Huéspedes</a>
+</nav>
+<div class="container">
+  <h1>Reservas</h1>
+  <p th:if="${error}" class="error" th:text="${error}"></p>
+
+  <h2>Crear reserva</h2>
+  <form action="/reservations" method="post" th:object="${form}" class="form-grid">
+    <label>Habitación
+      <select th:field="*{roomId}">
+        <option th:each="r : ${rooms}" th:value="${r.id}" th:text="${r.number + ' (' + r.type + ')'}"></option>
+      </select>
+    </label>
+    <label>Nombre(s) huésped <input type="text" th:field="*{guestFirstName}" placeholder="Nombre"></label>
+    <label>Apellidos huésped <input type="text" th:field="*{guestLastName}" placeholder="Apellidos"></label>
+    <label>Email <input type="email" th:field="*{guestEmail}" placeholder="email@dominio.com"></label>
+    <label>Teléfono <input type="tel" th:field="*{guestPhone}" placeholder="+502 ..."></label>
+    <label>Ingreso <input type="date" th:field="*{checkIn}"></label>
+    <label>Salida <input type="date" th:field="*{checkOut}"></label>
+    <label>Ocupantes <input type="number" min="1" th:field="*{occupants}"></label>
+    <button type="submit">Crear</button>
+  </form>
+
+  <h2>Listado</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th><th>Hab.</th><th>Huésped ID</th><th>Ingreso</th><th>Salida</th><th>Noches</th>
+        <th>Tarifa (GTQ)</th><th>Habitación</th><th>Cargos</th><th>Pagos</th><th>Total</th><th>Saldo</th><th>Estado</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="r : ${reservations}">
+        <td th:text="${r.code}"></td>
+        <td th:text="${r.roomId}"></td>
+        <td th:text="${r.guestId}"></td>
+        <td th:text="${r.checkInDate}"></td>
+        <td th:text="${r.checkOutDate}"></td>
+        <td th:text="${r.nights}"></td>
+        <td th:text="${#numbers.formatDecimal(r.nightlyRate, 1, 2)}"></td>
+        <td th:text="${#numbers.formatDecimal(r.roomTotal, 1, 2)}"></td>
+        <td th:text="${#numbers.formatDecimal(r.chargesTotal, 1, 2)}"></td>
+        <td th:text="${#numbers.formatDecimal(r.paymentsTotal, 1, 2)}"></td>
+        <td th:text="${#numbers.formatDecimal(r.grandTotal, 1, 2)}"></td>
+        <td th:text="${#numbers.formatDecimal(r.balance, 1, 2)}"></td>
+        <td th:text="${r.status}"></td>
+        <td>
+          <form th:action="@{'/reservations/' + ${r.id} + '/checkin'}" method="post" style="display:inline">
+            <button th:disabled="${r.status != T(com.example.hotel.domain.ReservationStatus).RESERVADA}">Check-in</button>
+          </form>
+          <form th:action="@{'/reservations/' + ${r.id} + '/checkout'}" method="post" style="display:inline">
+            <button th:disabled="${r.status != T(com.example.hotel.domain.ReservationStatus).EN_CURSO}">Check-out</button>
+          </form>
+          <details>
+            <summary>+ Cargo</summary>
+            <form th:action="@{'/reservations/' + ${r.id} + '/charge'}" method="post">
+              <input name="description" placeholder="Descripción">
+              <input type="number" step="0.01" name="amount" placeholder="Monto">
+              <input name="category" placeholder="Categoría">
+              <button>Agregar</button>
+            </form>
+          </details>
+          <details>
+            <summary>+ Pago</summary>
+            <form th:action="@{'/reservations/' + ${r.id} + '/payment'}" method="post">
+              <input type="number" step="0.01" name="amount" placeholder="Monto">
+              <input name="method" placeholder="Método (Efectivo/Tarjeta/Transferencia)">
+              <input name="reference" placeholder="Referencia">
+              <button>Registrar</button>
+            </form>
+          </details>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

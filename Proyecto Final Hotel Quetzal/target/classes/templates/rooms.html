@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Habitaciones')"></head>
+<body>
+<nav class="navbar">
+  <a href="/" class="brand">Hotel Quetzal (Guatemala)</a>
+  <a href="/rooms" class="active">Habitaciones</a>
+  <a href="/reservations">Reservas</a>
+  <a href="/guests">Huéspedes</a>
+</nav>
+<div class="container">
+  <h1>Habitaciones</h1>
+  <p th:if="${error}" class="error" th:text="${error}"></p>
+  <table>
+    <thead><tr><th>#</th><th>Tipo</th><th>Tarifa por noche (GTQ)</th><th>Estado</th><th>Bloqueada</th><th>Acción</th></tr></thead>
+    <tbody>
+      <tr th:each="r : ${rooms}">
+        <td th:text="${r.number}"></td>
+        <td th:text="${r.type}"></td>
+        <td th:text="${#numbers.formatDecimal(r.ratePerNight, 1, 2)}"></td>
+        <td th:text="${r.status}"></td>
+        <td th:text="${r.blocked}"></td>
+        <td>
+          <form th:action="@{'/rooms/' + ${r.id} + '/toggle-block'}" method="post">
+            <button th:text="${r.blocked} ? 'Desbloquear' : 'Bloquear'"></button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

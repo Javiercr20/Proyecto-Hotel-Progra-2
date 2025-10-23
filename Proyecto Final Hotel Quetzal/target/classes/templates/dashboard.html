@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Dashboard')"></head>
+<body>
+<nav class="navbar">
+  <a href="/" class="brand">Hotel Quetzal (Guatemala)</a>
+  <a href="/rooms">Habitaciones</a>
+  <a href="/reservations">Reservas</a>
+  <a href="/guests">Huéspedes</a>
+</nav>
+<div class="container">
+  <h1>Dashboard</h1>
+  <div class="grid">
+    <section>
+      <h2>Habitaciones</h2>
+      <table>
+        <thead><tr><th>#</th><th>Tipo</th><th>Estado</th><th>Bloqueada</th></tr></thead>
+        <tbody>
+          <tr th:each="r : ${rooms}">
+            <td th:text="${r.number}"></td>
+            <td th:text="${r.type}"></td>
+            <td th:text="${r.status}"></td>
+            <td th:text="${r.blocked}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>Reservas</h2>
+      <table>
+        <thead><tr><th>Código</th><th>Hab.</th><th>Huésped ID</th><th>Ingreso</th><th>Salida</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr th:each="r : ${reservations}">
+            <td th:text="${r.code}"></td>
+            <td th:text="${r.roomId}"></td>
+            <td th:text="${r.guestId}"></td>
+            <td th:text="${r.checkInDate}"></td>
+            <td th:text="${r.checkOutDate}"></td>
+            <td th:text="${r.status}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>Huéspedes</h2>
+      <ul>
+        <li th:each="g : ${guests}" th:text="${g.fullName}"></li>
+      </ul>
+    </section>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Huéspedes')"></head>
+<body>
+<nav class="navbar">
+  <a href="/" class="brand">Hotel Quetzal (Guatemala)</a>
+  <a href="/rooms">Habitaciones</a>
+  <a href="/reservations">Reservas</a>
+  <a href="/guests" class="active">Huéspedes</a>
+</nav>
+<div class="container">
+  <h1>Huéspedes</h1>
+  <table>
+    <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th></tr></thead>
+    <tbody>
+      <tr th:each="g : ${guests}">
+        <td th:text="${g.id}"></td>
+        <td th:text="${g.fullName}"></td>
+        <td th:text="${g.email}"></td>
+        <td th:text="${g.phone}"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
